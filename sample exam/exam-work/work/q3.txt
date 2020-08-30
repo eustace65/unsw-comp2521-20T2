@@ -1,0 +1,22 @@
+# COMP2521 20T2 Sample Exam Q3
+# Replace xxx with your answer
+
+(a) number of fib() calls in fib(3)
+
+xxx
+
+
+(b) number of fib() calls in fib(5)
+
+xxx
+
+
+(c) number of fib() calls in fib(7)
+
+xxx
+
+
+(d) feasibility of fib(n) for large n
+
+xxx
+

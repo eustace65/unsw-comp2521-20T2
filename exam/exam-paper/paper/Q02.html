@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP2521 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP2521 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP2521 Data Structures &amp; Algorithms <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>Data Structures &amp; Algorithms</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Website' href='https://webcms3.cse.unsw.edu.au/COMP2521/20T2/'>[Website]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <b>[Q2]</b> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <a href='Q07.html'>[Q7]</a> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 2 <span class='tiny'>(15 marks)</span></h3>
+<p>
+Trees can be viewed as a special case of directed graphs.
+A directed graph (digraph) is a binary tree provided it satisfies
+the following conditions:
+<p>
+<ul>
+<li> only one node has no incoming edges
+<li> all other nodes have exactly one incoming edge
+<li> nodes may have 0, 1 or 2 outgoing edges
+</ul>
+<p>
+The following diagram shows two example directed graphs, only one of which
+is an binary tree:
+</p>
+<center><img src="Pics/gist.png"></center>
+<p>
+Graphs are represented internally using a <tt>DiGraph</tt> data structure.
+Graphs are read from files which look like:
+</p>
+<pre>
+0  1 2 5
+1  3 4
+2  1
+3  -
+4  -
+5  -
+</pre>
+<p>
+This is the readable representation of the graph on the left above.
+Each line contains a node number and then a list of all the nodes
+that this node has outgoing edges to.
+</p>
+<p>
+We have provided a program that reads in a representation of a graph,
+builds a <tt>DiGraph</tt> data structure (adjacency matrix),
+dispay the graph structure on standard output,
+and then calls a function to determine whether the graph is a binary tree.
+Your task is to complete the <tt>graphIsBinTree()</tt> function,
+which takes a <tt>DiGraph</tt>, and returns
+<tt>true</tt> if the graph satisfies the three conditions given above,
+and returns <tt>false</tt> otherwise.
+</p>
+<p>
+The <tt>graphIsBinTree()</tt> function is defined as:
+</p>
+<pre>
+bool graphIsBinTree(DiGraph g)
+</pre>
+<p>
+Note that the <tt>DiGraph</tt> object is not passed to the function via
+a pointer. The whole structure is copied to the function to be tested.
+</p>
+<p>
+The code for this question is in the <tt>q2</tt> directory, which
+contains:
+<ul>
+<li><tt>gist.c</tt> ... program for testing graph-is-binary-tree</li>
+<li><tt>Makefile</tt> ...for building the program</li>
+<li><tt>tests/</tt> ... directory containing test cases</li>
+<li><tt>run_tests.sh</tt> .. script for runnign the tests
+</ul>
+<p>
+You ought to look at the data structures, the main program and the
+reading and writing functions, to familiarise yourself with the enviroment
+in which the <tt>graphIsBinTree()</tt> function operates.
+</p>
+<p>
+You can compile the program using the <tt>make</tt> command.
+This will give you an executable file called <tt>gist</tt>.
+As supplied, the <tt>graphIsBinTree()</tt> function  always
+returns <tt>false</tt>, regardless of the <tt>DiGraph</tt>.
+</p>
+<p>
+You should complete the <tt>graphIsBinTree()</tt> function. 
+You can define as many auxiliary functions as you want.
+It requires around 15-20 lines of code to solve this problem.
+</p>
+<p>
+You should <em>not</em> change any other part of <tt>gist.c</tt>
+except for the <tt>graphIsBinTree()</tt> function, and any
+extra helper functions that you want to add. If you change the
+input and output functions or the <tt>main()</tt> function,
+then you will probably fail all of the tests.
+<p>
+Submissions that don't compile are worth zero marks.
+Submissions that compile, but fail all tests are worth up to 7 marks.
+Submissions that compile and pass some tests are worth between 8 and 14 marks,
+depending on how close they are to a working solution.
+Submissions that compile and pass all tests are worth 15 marks
+</p>
+<p>
+Examples of how the program ought to behave when working correctly:
+</p>
+<pre>
+$ <b>./gist tests/g1</b>
+V    Connected to
+--   ------------
+0    1 2 5
+1    3 4
+2    1
+3    -
+4    -
+5    -
+
+Graph is not a tree
+
+$ <b>./gist tests/g2</b>
+V    Connected to
+--   ------------
+0    2 5
+1    3 4
+2    1
+3    -
+4    -
+5    -
+
+Graph is a tree
+</pre>
+<p>
+To help you check whether your program is working correctly,
+there is a script called <tt>run_tests.sh</tt> which will run
+the program against all of the tests and report the results.
+It will also add the output from your program into the 
+<tt>tests</tt> directory; comparing your output against the
+expected output might help you to debug your code.
+You can run the testing script as:
+</p>
+<pre>
+$ <b>sh run_tests.sh</b>
+</pre>
+<p>
+Once your function is working (passes all tests), follow
+the submission instructions below.
+Even if it fails some (or even all) tests, you should submit because
+you can get <i>some</i> marks.
+If your program does not compile, or if you simply submit
+the supplied code, then your "answer" is worth zero marks.
+</p>
+<p><b>Submission Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>gist.c</tt>
+<li> Submit via: &nbsp; <b><tt>give cs2521 exam_q2 gist.c</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>2</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>

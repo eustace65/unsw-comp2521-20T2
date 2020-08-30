@@ -1,0 +1,21 @@
+# COMP2521 20T2 Sample Exam Q7
+# replace xxx by your answer
+
+At start:
+
+MST = { }
+
+After iteration 1:
+
+MST = { xxx }
+
+After iteration 2:
+
+MST = { xxx }
+
+After iteration 3:
+
+MST = { xxx }
+
+etc. etc.
+

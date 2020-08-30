@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- saved from url=(0062)https://www.cse.unsw.edu.au/~cs1927/16x1/labs/lab08/lab08.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<meta name="robots" content="noindex,nofollow">
+
+<title>Lab Exercises Week 08 - 16x1 COMP1927</title>
+<script type="text/javascript" src="./lab08 spec_files/common.js"></script>
+
+<link rel="stylesheet" type="text/css" charset="utf-8" media="all" href="./lab08 spec_files/style.css">
+
+</head><body><h1>Lab Exercises Week 8 </h1>
+
+
+
+<h2>Objectives</h2>
+<ul>
+<li> To learn about balanced trees
+</li><li> To practise tree implementations
+</li><li> To learn about hash tables
+</li></ul>
+
+<h2> Assessment </h2>
+<p>
+</p><p><b>Deadline</b>: 11:59pm Wednesday 10th February 
+</p><p><b>Total Marks</b>: 4 (1 mark optional)
+
+
+</p><h2>Related Chapters of textbook </h2>
+<p>  Chapter 12.8 - 13.2 Sedgewick
+</p><p> Chapter 14 Sedgewick
+</p>
+
+<b>You may do this lab in pairs </b>
+<p>
+</p><h2>Setting Up</h2>
+<p>
+Set up a directory for this lab under your <tt>cs1927/labs</tt> directory,
+change into that directory, and run the following command:
+</p>
+<pre>cp /home/cs1927/public_html/16x1/labs/lab08/files/* .
+ln -s /home/cs1927/public_html/16x1/labs/lab08/largeFiles/dict3 dict3
+ln -s /home/cs1927/public_html/16x1/labs/lab08/largeFiles/dict4 dict4
+ln -s /home/cs1927/public_html/16x1/labs/lab08/largeFiles/dict5 dict5
+</pre>
+<p>
+If you've done the above correctly, you should now find the following files:
+</p>
+<table border="0" cellpadding="4">
+<tbody><tr><td>Tree.h </td><td> A binary search tree interface
+</td></tr><tr><td>Tree.c </td><td> A binary search tree implementation that needs to be modified  
+</td></tr><tr><td>words.c </td><td> a main program which loads words into the tree
+</td></tr><tr><td>Item.h</td><td>a simple Item definition. Items are arrays of characters
+</td></tr><tr><td>Makfile</td><td>A simple makefile for the lab
+</td></tr><tr><td>HashTable.h, HashTable.c </td><td> a Hash Table ADT
+</td></tr><tr><td>HashTableItem.h, HashTableItem.c </td><td> Defines keys and values for 
+the HashTable as implements a hashFuntion
+</td></tr><tr><td>words2.c </td><td> a main program that loads words into the hash table
+</td></tr><tr><td> dict0 </td><td>a file containing just 13 words
+</td></tr><tr><td> dict1 </td><td>a file containing 1777 words
+</td></tr><tr><td> dict2 </td><td>a file containing 7106 words
+
+
+</td></tr></tbody></table>
+
+<h2>Setup</h2>
+<p>
+Unix has a large dictionary of English words which available to use for 
+tasks such as spell checking. This dictionary is normally held in a file 
+called /usr/share/dict/words which contains almost 100000 words, including 
+a 
+large number of proper names (e.g. John, Sydney), and also including 
+possessive forms of most nouns (e.g. cat and cat's). For spell-checking, 
+we would scan a file of text and check whether each word in the file also 
+appeared in the dictionary; any word that did not would be treated as a 
+spelling error. This essentially means using the dictionary as a "lookup 
+table". </p><p>
+Before /usr/share/dict/words can reasonably be used as a lookup table, it 
+needs 
+to be put into a more useful form than a list of words (albeit alphabetically ordered).One possibility is to load the 
+dictionary into a binary search tree and do the searches on this data structure.
+
+</p><p>
+The difference between dict4 and dict5 is that all of the proper names and all of the possessive forms have been removed. 
+Apart from dict0, the other dictionaries are randomly-chosen subsets of dict4. All of the files are sorted in alphabetical 
+order. Note that we give you links to the large dictionaries rather than copies of them because they occupy a non-trivial 
+amount of disk quota. If you want to work on this exercise at home and use the large dictionaries, you'll need to grab copies 
+of them.
+</p><p>
+
+</p><p>
+We have implemented a program, words.c that reads the
+dictionary words into Tree structures for fast lookup.
+
+</p><h2> Task1: Rotations - 1 Marks </h2>
+<p><b>rotLeft and rotRight in Tree.c are broken. They do not update the  size information in the nodes</b>. This stops other functions that rely on the size field, such as partition, from working properly. You must fix these and write some white box tests to check they work correctly.
+
+</p><p>Note: Our implementation or rotLeft and rotRight do not check for situtations such as trying to rotate an emptyTree etc, so you may want to add error checking for these cases too.
+
+</p><h2> Task2: Balancing Trees - 1 Marks </h2>
+
+<b>Note: You must get task1 working otherwise the balancing functions used in this task will not work </b>
+<p>
+The main program <tt>words</tt> reads from a user-specified file of words,
+and, once the words are  loaded,
+prints out the number of nodes and the height of the tree used
+to store the words. It also prints out what kind of rebalancing strategy
+was used.
+
+</p><p>
+It takes a command-line argument containing the name of the 
+dictionary file to be loaded along with an integer that represents what 
+tree balancing strategy should be used by the tree. The program works as 
+follows: 
+
+</p><p>It inserts all the words from the test file dictionary into a dictionary ADT that is implemented via a tree. 
+The program then prints out properties of the resulting underlying tree. 
+
+</p><p>Make the file and confirm that it runs using the dict0 file and using 
+balance strategy 0 (No rebalancing) by running it as follows
+</p><p>
+</p><pre>./words dict0 0
+</pre>
+<p>You can run other balancing strategies (once you have 
+implemented them) by using different command line arguments. For example, 
+once 
+you have implemented REBALANCE_1 strategy you could also try the 
+approach where the tree has been rebalanced after 
+every insertion by running:
+</p><pre>./words dict0 1
+</pre>
+
+<p>
+We are going to investigate/implement the following approaches for 
+rebalancing a BST.
+
+</p><ol start="0"> 
+<li> NO_REBALANCE : No rebalancing - normal BST insertion
+</li><li> REBALANCE_1 : Global rebalancing after every insertion
+</li><li> REBALANCE_100 : Global rebalancing after every 100 items are inserted
+</li><li> REBALANCE_1000 : Global rebalancing after every 1000 items are inserted
+</li><li> RANDOMISED : Using randomised BST insertion
+</li><li> SPLAY: Using splay insertion
+</li></ol>
+
+
+<p>
+The task is to complete a function called treeInsert that is partially implemented in the file <tt>tree.c</tt>
+</p><pre>void treeInsert(Tree tree, Item it);
+</pre>
+<p>
+The function should call the appropriate insertRecursive and balance 
+functions according to the specified rebalancing approach. The function 
+already handles the first  balancing strategies (not balancing the tree 
+at all), you need to add code to 
+handle the rest.
+</p><p>
+
+</p><p>Note: All the necessary functions for standard insertion, balancing, random insertion and splay insertion are provided. 
+You just need to call them appropriately.
+
+</p><p>Once you have implemented the above strategies, 
+run all approaches on the different dictionaries supplied and record the 
+</p><ul>
+<li>
+heights of the resulting trees in a file called lab08.txt.   
+</li><li>the amount of user time it takes to insert and search for all keys
+</li><li>the amount of user time it takes to insert all keys (comment out the line in the main function that calls the 
+searchAllWords function)
+</li></ul>
+Note: Make sure you run the randomised BST approach a number of times to get 
+an average (as this is a randomised approach and heights will differ 
+'randomly' each time). 
+
+<p>Discuss the reasons for the differences in height and run times between these different 
+approaches and algorithms. How  does each algorithm influence the time to 
+insert vs the time to search vs the height of the resulting tree? What other tests could you run to compare these 
+implementations.
+
+
+
+
+</p><h2> Task3: Search in a splay tree (Harder and optional) - 1 Mark</h2>
+<p>
+In lectures, we discussed inserting an item into a splay tree (Balanced tree examples). 
+The amortised cost of insert and search operations on splay trees is only valid 
+if we also perform splay rotations during searching for an item. 
+An partial of implementation of splaySearch has been provided in Tree.c to 
+get you started. Its prototype is as follows:
+</p><pre>link searchSplay (link n, Key k, int * found); 
+</pre>
+It searches for an item and performs splay rotations on the traversed path, much like the function splayInsert() does. 
+<p>
+NOTE: Once an item has been found it ismoved to the root of tree. 
+If the key does not exist in the tree, the last node on the search path should be moved to the root.
+
+</p><p>You can look at insertSplay to help you implement this function.
+
+</p><p>NOTE2: Because the search function changes the root of the tree, it needs to return a pointer to the new root, thus the 
+actual result of the search should be stored in the variable pointed to by found. 
+This should be 1 if the key was in the tree and 0 otherwise.
+</p><p>
+The treeSearch function needs to be  modified so that it calls the appropriate version of searching ,depending 
+what balancing strategy is used. 
+ie it calls splaySearch function if the balanceStrategy is set to SPLAY or the standard searchRecursive otherwise.
+
+</p><p>
+Try running the program on all dictionaries using splay insert and search, inserting all keys, printing out the height and 
+then calling the 
+searchAllWords function and printing out the height again and recording 
+the times again. 
+Record the heights before and after searching. 
+Compare the heights and times and discuss your results. 
+
+
+
+</p><h2>Task 4 HashTables - 1 Mark</h2>
+<tt>words2.c</tt> is a program that is similar to <tt>words.c</tt> except instead of using trees to store the words it 
+stores the words in a hashtable. The program is run in a similar way, however this time, the second command line argument 
+indicates what size to make the hashTable.
+<p>
+For example
+</p><pre>./words2 dict0 100
+</pre>
+reads dict0 into a  hash table of size 100
+<p>The program then prints out some statistics about the hashtable, such 
+as the size and the number of collisions. We also want it to print out the 
+length of the longest chain in the hashtable. At the moment this has not 
+been implemented and it simply prints out 0.
+
+</p><p>Inside the HashTable.c file, there is an implementation of a hashTable 
+that uses chaining to handle collisions. 
+</p><p>
+Your task is to write the function
+</p><pre>static int longestChainSize(HashTable table);
+</pre>
+<p>
+This function should go through the hash table and find the length of the 
+longest chain in the hashtable. 
+</p><p>Once you have written this function and are convinced it works, try 
+running the program with different dictionaries and different table sizes. 
+Record the number of collisions and the length of the longest chain for 
+the different dictionaries and different table sizes. How effective would 
+you say that the given hashFunction is in this situation? Write this in 
+your lab08.txt file.
+</p><p>
+Perhaps even try modifying the hashFunction inside HashTableItem.c. Can 
+you improve on the one we have given you? (Note: you do not need to 
+improve the hashFunction for the lab mark. This is just for interest)
+ </p><p>
+
+</p><h2>Submission</h2>
+When you are happy with your work, please show it to your tutor to get it 
+marked.
+Before you leave your lab, remember to submit your lab via the give 
+command
+<p>
+
+</p><pre>1927 classrun 16x1 give lab08 Tree.c lab08.txt HashTable.c
+</pre>
+
+<br>
+
+
+
+
+
+</body></html>

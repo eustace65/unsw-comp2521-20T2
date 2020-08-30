@@ -1,0 +1,8 @@
+if (Cond) {
+   x = Exp1;
+}
+else {
+   x = Exp2;
+}
+
+x = (Cond) ? Exp1 : Exp2;

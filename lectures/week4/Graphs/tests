@@ -1,0 +1,19 @@
+#!/bin/sh
+
+case $# in
+1) V=$1 ;;
+*) echo Usage $0 V; exit 1 ;;
+esac
+
+for i in `seq $V`
+do
+	for j in `seq $V`
+	do
+		if [ $i -eq $j ]
+		then
+			continue
+		fi
+		echo Path from $i to $j
+		echo f $i $j | ./glab $V | grep -i path
+	done
+done

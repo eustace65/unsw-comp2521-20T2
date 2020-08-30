@@ -1,0 +1,407 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 21.06      0.04     0.04   810745     0.00     0.00  getNextWord
+ 13.16      0.07     0.03   548415     0.00     0.00  reccurFind
+ 10.53      0.09     0.02  8917480     0.00     0.00  getHeight
+ 10.53      0.11     0.02  2218824     0.00     0.00  rebalance
+ 10.53      0.13     0.02  1845348     0.00     0.00  ends
+ 10.53      0.15     0.02   216861     0.00     0.00  reccurInsert
+  5.27      0.16     0.01   548415     0.00     0.00  processWord
+  5.27      0.17     0.01   216207     0.00     0.00  stemWord
+  5.27      0.18     0.01   215342     0.00     0.00  step2
+  5.27      0.19     0.01   124697     0.00     0.00  m
+  2.63      0.19     0.01        1     5.00     5.00  insertTopN
+  0.00      0.19     0.00  2239916     0.00     0.00  correctHeight
+  0.00      0.19     0.00   882003     0.00     0.00  cons
+  0.00      0.19     0.00   548415     0.00     0.00  DictFind
+  0.00      0.19     0.00   548415     0.00     0.00  isStopword
+  0.00      0.19     0.00   216861     0.00     0.00  DictInsert
+  0.00      0.19     0.00   216207     0.00     0.00  stem
+  0.00      0.19     0.00   215342     0.00     0.00  step1ab
+  0.00      0.19     0.00   215342     0.00     0.00  step1c
+  0.00      0.19     0.00   215342     0.00     0.00  step3
+  0.00      0.19     0.00   215342     0.00     0.00  step4
+  0.00      0.19     0.00   215342     0.00     0.00  step5
+  0.00      0.19     0.00    65694     0.00     0.00  isMarker
+  0.00      0.19     0.00    65664     0.00     0.00  insertWords
+  0.00      0.19     0.00    58803     0.00     0.00  vowelinstem
+  0.00      0.19     0.00    51219     0.00     0.00  doublec
+  0.00      0.19     0.00    44575     0.00     0.00  cvc
+  0.00      0.19     0.00    14196     0.00     0.00  newNode
+  0.00      0.19     0.00    13542     0.00     0.00  arrayInsertInorder
+  0.00      0.19     0.00    12404     0.00     0.00  setto
+  0.00      0.19     0.00     7582     0.00     0.00  r
+  0.00      0.19     0.00     5603     0.00     0.00  rotateLeft
+  0.00      0.19     0.00     4943     0.00     0.00  rotateRight
+  0.00      0.19     0.00        2     0.00     0.00  closeFile
+  0.00      0.19     0.00        2     0.00     0.00  newDict
+  0.00      0.19     0.00        2     0.00     0.00  openFile
+  0.00      0.19     0.00        1     0.00     0.18  buildStopwordDict
+  0.00      0.19     0.00        1     0.00     0.00  displayTopN
+  0.00      0.19     0.00        1     0.00     0.00  findStartMark
+  0.00      0.19     0.00        1     0.00     5.00  findTopN
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 5.26% of 0.19 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]    100.0    0.00    0.19                 main [1]
+                0.00    0.18   65664/65664       insertWords [2]
+                0.00    0.01       1/1           findTopN [20]
+                0.00    0.00       1/1           buildStopwordDict [26]
+                0.00    0.00   65665/65694       isMarker [30]
+                0.00    0.00       1/2           openFile [39]
+                0.00    0.00       1/1           findStartMark [41]
+                0.00    0.00       1/2           newDict [38]
+                0.00    0.00       1/2           closeFile [37]
+                0.00    0.00       1/1           displayTopN [40]
+-----------------------------------------------
+                0.00    0.18   65664/65664       main [1]
+[2]     97.3    0.00    0.18   65664         insertWords [2]
+                0.01    0.13  548415/548415      processWord [3]
+                0.04    0.00  810745/810745      getNextWord [7]
+-----------------------------------------------
+                0.01    0.13  548415/548415      insertWords [2]
+[3]     76.2    0.01    0.13  548415         processWord [3]
+                0.00    0.06  216207/216861      DictInsert [4]
+                0.01    0.04  216207/216207      stemWord [6]
+                0.00    0.03  548415/548415      isStopword [11]
+-----------------------------------------------
+                0.00    0.00     654/216861      buildStopwordDict [26]
+                0.00    0.06  216207/216861      processWord [3]
+[4]     31.6    0.00    0.06  216861         DictInsert [4]
+                0.02    0.04  216861/216861      reccurInsert [5]
+-----------------------------------------------
+                             2218824             reccurInsert [5]
+                0.02    0.04  216861/216861      DictInsert [4]
+[5]     31.6    0.02    0.04  216861+2218824 reccurInsert [5]
+                0.02    0.01 2218824/2218824     rebalance [9]
+                0.00    0.01 2218824/2239916     correctHeight [17]
+                0.00    0.00   14196/14196       newNode [34]
+                             2218824             reccurInsert [5]
+-----------------------------------------------
+                0.01    0.04  216207/216207      processWord [3]
+[6]     26.3    0.01    0.04  216207         stemWord [6]
+                0.00    0.04  216207/216207      stem [8]
+-----------------------------------------------
+                0.04    0.00  810745/810745      insertWords [2]
+[7]     21.1    0.04    0.00  810745         getNextWord [7]
+-----------------------------------------------
+                0.00    0.04  216207/216207      stemWord [6]
+[8]     21.1    0.00    0.04  216207         stem [8]
+                0.01    0.00  215342/215342      step2 [15]
+                0.00    0.01  215342/215342      step1ab [16]
+                0.00    0.01  215342/215342      step4 [19]
+                0.00    0.00  215342/215342      step5 [22]
+                0.00    0.00  215342/215342      step1c [23]
+                0.00    0.00  215342/215342      step3 [24]
+-----------------------------------------------
+                0.02    0.01 2218824/2218824     reccurInsert [5]
+[9]     15.8    0.02    0.01 2218824         rebalance [9]
+                0.01    0.00 4437648/8917480     getHeight [13]
+                0.00    0.00    5603/5603        rotateLeft [27]
+                0.00    0.00    4943/4943        rotateRight [28]
+-----------------------------------------------
+                0.00    0.03  548415/548415      isStopword [11]
+[10]    13.2    0.00    0.03  548415         DictFind [10]
+                0.03    0.00  548415/548415      reccurFind [12]
+-----------------------------------------------
+                0.00    0.03  548415/548415      processWord [3]
+[11]    13.2    0.00    0.03  548415         isStopword [11]
+                0.00    0.03  548415/548415      DictFind [10]
+-----------------------------------------------
+                             4506581             reccurFind [12]
+                0.03    0.00  548415/548415      DictFind [10]
+[12]    13.2    0.03    0.00  548415+4506581 reccurFind [12]
+                             4506581             reccurFind [12]
+-----------------------------------------------
+                0.01    0.00 4437648/8917480     rebalance [9]
+                0.01    0.00 4479832/8917480     correctHeight [17]
+[13]    10.5    0.02    0.00 8917480         getHeight [13]
+-----------------------------------------------
+                0.00    0.00  181596/1845348     step3 [24]
+                0.00    0.00  215342/1845348     step1c [23]
+                0.00    0.00  285033/1845348     step4 [19]
+                0.00    0.00  365545/1845348     step2 [15]
+                0.01    0.00  797832/1845348     step1ab [16]
+[14]    10.5    0.02    0.00 1845348         ends [14]
+-----------------------------------------------
+                0.01    0.00  215342/215342      stem [8]
+[15]     7.6    0.01    0.00  215342         step2 [15]
+                0.00    0.00  365545/1845348     ends [14]
+                0.00    0.00    5052/7582        r [25]
+-----------------------------------------------
+                0.00    0.01  215342/215342      stem [8]
+[16]     6.0    0.00    0.01  215342         step1ab [16]
+                0.01    0.00  797832/1845348     ends [14]
+                0.00    0.00   33361/124697      m [18]
+                0.00    0.00   40142/58803       vowelinstem [31]
+                0.00    0.00   37550/51219       doublec [32]
+                0.00    0.00   17457/44575       cvc [33]
+                0.00    0.00    5303/12404       setto [36]
+-----------------------------------------------
+                0.00    0.00    9886/2239916     rotateRight [28]
+                0.00    0.00   11206/2239916     rotateLeft [27]
+                0.00    0.01 2218824/2239916     reccurInsert [5]
+[17]     5.3    0.00    0.01 2239916         correctHeight [17]
+                0.01    0.00 4479832/8917480     getHeight [13]
+-----------------------------------------------
+                0.00    0.00    7582/124697      r [25]
+                0.00    0.00   33361/124697      step1ab [16]
+                0.00    0.00   39110/124697      step4 [19]
+                0.00    0.00   44644/124697      step5 [22]
+[18]     5.3    0.01    0.00  124697         m [18]
+                0.00    0.00  646466/882003      cons [29]
+-----------------------------------------------
+                0.00    0.01  215342/215342      stem [8]
+[19]     3.3    0.00    0.01  215342         step4 [19]
+                0.00    0.00   39110/124697      m [18]
+                0.00    0.00  285033/1845348     ends [14]
+-----------------------------------------------
+                0.00    0.01       1/1           main [1]
+[20]     2.6    0.00    0.01       1         findTopN [20]
+                0.01    0.00       1/1           insertTopN [21]
+-----------------------------------------------
+                               27084             insertTopN [21]
+                0.01    0.00       1/1           findTopN [20]
+[21]     2.6    0.01    0.00       1+27084   insertTopN [21]
+                0.00    0.00   13542/13542       arrayInsertInorder [35]
+                               27084             insertTopN [21]
+-----------------------------------------------
+                0.00    0.00  215342/215342      stem [8]
+[22]     1.9    0.00    0.00  215342         step5 [22]
+                0.00    0.00   44644/124697      m [18]
+                0.00    0.00   27118/44575       cvc [33]
+                0.00    0.00   13669/51219       doublec [32]
+-----------------------------------------------
+                0.00    0.00  215342/215342      stem [8]
+[23]     1.2    0.00    0.00  215342         step1c [23]
+                0.00    0.00  215342/1845348     ends [14]
+                0.00    0.00   18661/58803       vowelinstem [31]
+-----------------------------------------------
+                0.00    0.00  215342/215342      stem [8]
+[24]     1.1    0.00    0.00  215342         step3 [24]
+                0.00    0.00  181596/1845348     ends [14]
+                0.00    0.00    2530/7582        r [25]
+-----------------------------------------------
+                0.00    0.00    2530/7582        step3 [24]
+                0.00    0.00    5052/7582        step2 [15]
+[25]     0.3    0.00    0.00    7582         r [25]
+                0.00    0.00    7582/124697      m [18]
+                0.00    0.00    7101/12404       setto [36]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[26]     0.1    0.00    0.00       1         buildStopwordDict [26]
+                0.00    0.00     654/216861      DictInsert [4]
+                0.00    0.00       1/2           newDict [38]
+                0.00    0.00       1/2           openFile [39]
+                0.00    0.00       1/2           closeFile [37]
+-----------------------------------------------
+                0.00    0.00    5603/5603        rebalance [9]
+[27]     0.0    0.00    0.00    5603         rotateLeft [27]
+                0.00    0.00   11206/2239916     correctHeight [17]
+-----------------------------------------------
+                0.00    0.00    4943/4943        rebalance [9]
+[28]     0.0    0.00    0.00    4943         rotateRight [28]
+                0.00    0.00    9886/2239916     correctHeight [17]
+-----------------------------------------------
+                                3516             cons [29]
+                0.00    0.00    9456/882003      doublec [32]
+                0.00    0.00  109615/882003      cvc [33]
+                0.00    0.00  116466/882003      vowelinstem [31]
+                0.00    0.00  646466/882003      m [18]
+[29]     0.0    0.00    0.00  882003+3516    cons [29]
+                                3516             cons [29]
+-----------------------------------------------
+                0.00    0.00      29/65694       findStartMark [41]
+                0.00    0.00   65665/65694       main [1]
+[30]     0.0    0.00    0.00   65694         isMarker [30]
+-----------------------------------------------
+                0.00    0.00   18661/58803       step1c [23]
+                0.00    0.00   40142/58803       step1ab [16]
+[31]     0.0    0.00    0.00   58803         vowelinstem [31]
+                0.00    0.00  116466/882003      cons [29]
+-----------------------------------------------
+                0.00    0.00   13669/51219       step5 [22]
+                0.00    0.00   37550/51219       step1ab [16]
+[32]     0.0    0.00    0.00   51219         doublec [32]
+                0.00    0.00    9456/882003      cons [29]
+-----------------------------------------------
+                0.00    0.00   17457/44575       step1ab [16]
+                0.00    0.00   27118/44575       step5 [22]
+[33]     0.0    0.00    0.00   44575         cvc [33]
+                0.00    0.00  109615/882003      cons [29]
+-----------------------------------------------
+                0.00    0.00   14196/14196       reccurInsert [5]
+[34]     0.0    0.00    0.00   14196         newNode [34]
+-----------------------------------------------
+                0.00    0.00   13542/13542       insertTopN [21]
+[35]     0.0    0.00    0.00   13542         arrayInsertInorder [35]
+-----------------------------------------------
+                0.00    0.00    5303/12404       step1ab [16]
+                0.00    0.00    7101/12404       r [25]
+[36]     0.0    0.00    0.00   12404         setto [36]
+-----------------------------------------------
+                0.00    0.00       1/2           main [1]
+                0.00    0.00       1/2           buildStopwordDict [26]
+[37]     0.0    0.00    0.00       2         closeFile [37]
+-----------------------------------------------
+                0.00    0.00       1/2           main [1]
+                0.00    0.00       1/2           buildStopwordDict [26]
+[38]     0.0    0.00    0.00       2         newDict [38]
+-----------------------------------------------
+                0.00    0.00       1/2           main [1]
+                0.00    0.00       1/2           buildStopwordDict [26]
+[39]     0.0    0.00    0.00       2         openFile [39]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[40]     0.0    0.00    0.00       1         displayTopN [40]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[41]     0.0    0.00    0.00       1         findStartMark [41]
+                0.00    0.00      29/65694       isMarker [30]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [10] DictFind                [7] getNextWord            [27] rotateLeft
+   [4] DictInsert             [21] insertTopN             [28] rotateRight
+  [35] arrayInsertInorder      [2] insertWords            [36] setto
+  [26] buildStopwordDict      [30] isMarker                [8] stem
+  [37] closeFile              [11] isStopword              [6] stemWord
+  [29] cons                   [18] m                      [16] step1ab
+  [17] correctHeight          [38] newDict                [23] step1c
+  [33] cvc                    [34] newNode                [15] step2
+  [40] displayTopN            [39] openFile               [24] step3
+  [32] doublec                 [3] processWord            [19] step4
+  [14] ends                   [25] r                      [22] step5
+  [41] findStartMark           [9] rebalance              [31] vowelinstem
+  [20] findTopN               [12] reccurFind
+  [13] getHeight               [5] reccurInsert

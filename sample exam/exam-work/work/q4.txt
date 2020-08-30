@@ -1,0 +1,11 @@
+# COMP2521 20T2 Sample Exam Q4
+# replace xxx by your answer
+
+(a) infix and prefix orders the same
+
+xxx
+
+
+(b) all output orders the same?
+
+xxx

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0062)https://www.cse.unsw.edu.au/~cs1927/16x1/labs/lab01/lab01.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+      <title>
+COMP1927  Computing 1  Lab Exercises Week 1
+      </title>
+<link href="./lab01 specification_files/style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<h1> Lab Exercises Week 1</h1>
+
+<h2>Objectives</h2>
+<p>
+</p><ul>
+<li> To practise programming linked lists
+</li><li> To practise programming doubly linked lists
+</li><li> To practise using tools such as gdb and valgrind
+</li></ul>
+<p></p>
+
+<h2> Assessment </h2>
+<p>
+</p><p><b>Deadline</b>: 11:59pm Tue 8 December 2015
+</p><p><b>Total Marks</b>: 3
+
+
+</p><p>
+You must get your tutor in your lab to mark the exercises during the allocated 
+lab time or the following week if you submitted your lab on time using 
+give. 
+Try to get them to mark each exercise as you complete it in your lab time if 
+possible.
+In addition to the code that the exercise calls for, you will of course have to write some additional code to test the correctness of your implementation. 
+Your tutor may want to see this testing code, too. Good style requires good tests! 
+</p>
+
+
+
+<h2>Exercise 1 - Linked Lists (0.5 mark)</h2>
+<p>
+Copy the files <a href="http://www.cse.unsw.edu.au/~cs1927/15x1/labs/lab01/lists.h"> lists.h 
+</a>, <a href="http://www.cse.unsw.edu.au/~cs1927/15x1/labs/lab01/lists.c"> 
+lists.c </a> and 
+<a href="http://www.cse.unsw.edu.au/~cs1927/15x1/labs/lab01/testLists.c"> 
+testLists.c </a>into your working directory. The file <code> lists.c 
+</code> 
+contains a <code>printList</code> function and stubs for other functions 
+you need to implement to complete the lab. You can use <code> testLists.c 
+</code> to write your tests, but do not edit <code>lists.h</code>
+</p>
+<p>
+Implement the function </p><pre>int sumListItems (link ls);
+</pre>
+which adds all the items in a list and returns the resulting integer value, 
+and and tests to <code>testLists.c</code>. Test it for lists with zero, 
+one, and some more elements.
+<p></p>
+<p>
+Compile your program with the command
+</p><pre>	 gcc -Wall -Werror -gdwarf-2 -o  testLists testLists.c lists.c
+</pre>
+<p></p>
+The <tt>-gdwarf-2</tt> option makes sure that debug information is generated. 
+<p>
+Execute your program in <tt>gdb</tt> or <tt>ddd</tt> and show your tutor that you can:
+</p><ol>
+		<li> set a breakpoint at the beginning of a function and at a given line in the program </li>
+		<li> know how to inspect the elements of a list using the <tt>print</tt> command</li>
+		<li> inspect the call stack. 
+			</li>
+			</ol>
+
+<h2>Exercise 2 - Linked Lists (0.5 mark)</h2>
+<p> Type in the command
+</p><pre>valgrind ./testLists
+</pre>
+The output should show you that you have some memory leaks - assuming you
+have written some code in testLists that actually adds some nodes to your
+linked list.
+
+
+<p>
+Implement the function 
+</p><pre>void freeList(link list); 
+</pre>
+that frees all the memory for each node in 
+your list. Once you have written the function, test it in your testLists 
+code. Run valgrind again and check that all the memory leaks have gone. 
+You must be able to show this to your tutor.
+<p></p>
+
+			
+<h2>Exercise 3 - Linked Lists (1 mark)</h2>	
+<p>
+Implement the function
+</p><pre>link fromTo (int start, int end);
+</pre>
+<p></p>
+<p>
+which creates a list with the elements <tt>start</tt>
+to <tt>end</tt>. If <tt>start</tt> is  greater    than <tt>end</tt>, return the empty
+list. 
+
+Examples:
+</p><pre>fromTo (2,6)      2 -&gt;3 -&gt;4 -&gt;5 -&gt;6 -&gt;X
+fromTo (3,3)      3 -&gt;X
+fromTo (4,3)      -&gt;X
+</pre>
+<p></p>
+
+<h2>Exercise 4 - Doubly Linked Lists (1 mark)</h2>	
+<p>
+Write a function 
+</p><pre>dlink doublify (link ls)
+</pre>
+which, given a linked list, creates a new doubly linked list with the same items as elements.
+You might want to write a printDList function to test it.
+<p>You must also write a function
+
+</p><pre>void freeDList(dlink list);
+</pre>
+
+and make sure you can demonstrate that you have freed the 
+memory correctly to your tutor.
+
+
+<p></p>
+<p>
+</p><h2>Submitting your lab</h2>
+ You must get the lab marked by your tutor in your lab. You should also submit your solution using give on a CSE machine. To do this, run:
+
+<pre>1927 classrun 16x1 give lab01 lists.c
+</pre>
+
+	
+</body></html>

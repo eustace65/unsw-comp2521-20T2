@@ -1,0 +1,2 @@
+qsort : qsort.c
+	gcc -Wall -Werror qsort.c -o qsort

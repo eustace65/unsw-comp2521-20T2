@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP2521 Final Exam </title>
+<link rel='stylesheet' type='text/css' href='exam.css'></head>
+<body>
+<div align='center'>
+<table width='100%' border='0'>
+<tr valign='top'>
+<td align='left' width='20%'>
+  <span class='tiny'>COMP2521 Final Exam</span>
+</td>
+<td align='center' width='60%'>
+  The University of New South Wales <br>
+  <span class='heading'>COMP2521 Data Structures &amp; Algorithms <br>  Final Exam</span>
+</td>
+<td align='right' width='20%'>
+  <span class='tiny'>Data Structures &amp; Algorithms</span>
+</td>
+</table>
+</div>
+<center><a href='index.html'>[Instructions]</a> <a target='Website' href='https://webcms3.cse.unsw.edu.au/COMP2521/20T2/'>[Website]</a> <a target='C' href='c-lang/index.html'>[C]</a> 
+<br>
+<a href='Q01.html'>[Q1]</a> <a href='Q02.html'>[Q2]</a> <a href='Q03.html'>[Q3]</a> <a href='Q04.html'>[Q4]</a> <a href='Q05.html'>[Q5]</a> <a href='Q06.html'>[Q6]</a> <b>[Q7]</b> <a href='Q08.html'>[Q8]</a> 
+</center>
+<hr>
+<div style='margin-left:40px;margin-right:40px'>
+<h3>Question 7 <span class='tiny'>(4 marks)</span></h3>
+<p>
+Heaps can be viewed as top-to-bottom ordered trees and implemented
+as arrays. When a heap is used to implement a priority queue,
+the root node is always removed to implement the "leave queue"
+operation. The root node is replaced by the bottom-most, right-most
+node. The heap property is then restored using the siftDown()
+operation, which pushes the root node down the tree until it
+reaches its appropriate position.
+</p>
+The following diagram shows this remove-replace-siftDown process:
+</p>
+<center><img src="Pics/heap-del.png"></center>
+<p>
+As an array, the above initial heap looks like the following:
+</p>
+<pre>
+       [1]  [2]  [3]  [4]  [5]  [6]  [7]  [8]  [9]
+heap    99   75   69   30   25   40   20   -    -
+</pre>
+<p>
+Show all of the states of the array as it undergoes
+remove-replace-siftDown.
+Show all of the intermediate states in siftDown().
+</p>
+<p><b>Instructions:</b></p>
+<ul>
+<li> Type your answer to this question into the file called <tt>q7.txt</tt>
+<li> Submit via: &nbsp; <b><tt>give cs2521 exam_q7 q7.txt</tt></b> <br>
+	or via: Webcms3 &gt; exams &gt; Final Exam &gt; Submit Q<nobr>7</nobr> &gt; Make Submission
+</ul>
+
+</div>
+<center><i>End of Question</i></center>
+</body>
+</html>
