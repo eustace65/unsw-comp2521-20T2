@@ -1,1 +1,0 @@
-./gist tests/g5

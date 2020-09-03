@@ -1,7 +1,0 @@
-Iteration through a collection
-
-SetScan scan = startScan();
-while ((it = getNext(scan) != NULL) {
-	do something with item
-}
-closeScan(scan);
