@@ -20,52 +20,51 @@
 
 static PlaceId *hunterPossiblePlaces(DraculaView dv, int *possible_places);
 //static PlaceId *draculaTrails(DraculaView dv);
-static bool trail_revealed(DraculaView dv);
+//static bool trail_revealed(DraculaView dv);
 
 
 // decide the next move of dracula
 void decideDraculaMove(DraculaView dv)
 {
+    PlaceId port_city[29] = {CONSTANTA, VARNA, SALONICA, ATHENS, VALONA,
+        BARI, NAPLES, ROME, VENICE, GENOA, CAGLIARI, HAMBURG, AMSTERDAM, 
+        MARSEILLES, BARCELONA, ALICANTE, CADIZ, LISBON, SANTANDER, 
+        BORDEAUX, NANTES, LE_HAVRE, PLYMOUTH, LONDON, SWANSEA, 
+        LIVERPOOL, EDINBURGH, DUBLIN, GALWAY};
+        
+    // list of places where if 3 or more hunters are at, do not commence
+    // castle entrap to gain HP.
+   /* PlaceId safe_entrap[20] = {KLAUSENBURG, CASTLE_DRACULA, GALATZ, 
+        CONSTANTA, BLACK_SEA, VARNA, SOFIA, SZEGED, BELGRADE, BUCHAREST,
+        SALONICA, VALONA, IONIAN_SEA, SARAJEVO, ST_JOSEPH_AND_ST_MARY, 
+        VIENNA, ZAGREB, BUDAPEST, PRAGUE, VENICE};   */ 
+    // list of places near CD
+  /*  PlaceId safe_dbCD[8] = {KLAUSENBURG, CASTLE_DRACULA, GALATZ, 
+        BUCHAREST, SOFIA, CONSTANTA, BLACK_SEA, VARNA};  */
+        
     Round current_round = DvGetRound(dv);
     PlaceId current_place = DvGetPlayerLocation(dv, PLAYER_DRACULA);
     // get all the dangerousPlaces that hunters can possibly go to
     int possible_places = 0;
     PlaceId *dangerousPlaces = hunterPossiblePlaces(dv, &possible_places);
     bool dangerous;
-    bool safe_castle = true;
-    // initialize
-    for (int i = 0; i < possible_places; i++) {
-        if (dangerousPlaces[i] == CASTLE_DRACULA) {
-            safe_castle = false;
-            break;
-        }
-            
-    }
+
     // the first round
     if (current_round == 0) {
         // initialize
-        PlaceId initial_places[NUM_REAL_PLACES];
-        for (int i = 0; i < NUM_REAL_PLACES; i++) {
-            initial_places[i] = NOWHERE;
-        }
-        // add all safe places to initial_places
+        PlaceId initial_places[29] = {0};
+        // add all safe port places to initial_places
         int numMoves = 0;
-        for (int i = MIN_REAL_PLACE; i <= MAX_REAL_PLACE; i++) {
+        for (int i = 0; i < 29; i++) {
             dangerous = false;
             for (int j = 0; j < possible_places; j++) {
-                if (i == dangerousPlaces[j]) {
+                if (port_city[i] == dangerousPlaces[j]) {
                     dangerous = true;
                     break;
                 }
             }
-            if (!dangerous && placeIdToType(i) == LAND) {
-                initial_places[numMoves++] = i;
-                // if castle is safe, go to castle directly
-                if (i == CASTLE_DRACULA) {
-                    registerBestPlay(placeIdToAbbrev(i), "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-                    free(dangerousPlaces);
-                    return;
-                }
+            if (!dangerous ) {
+                initial_places[numMoves++] = port_city[i];       
             }
         }
         // generate a random place from initial_places
@@ -74,39 +73,56 @@ void decideDraculaMove(DraculaView dv)
             "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
         free(dangerousPlaces);
         return;
-    } else {
-        
-        
-        // get all possible moves of dracula and trail
+    } else {   
+        // get all possible moves of dracula
         int numReturnedMoves;
         int numReturnedLocs;
-        int numSeaLocs;
-        int numLandLocs;
         PlaceId *moves = DvGetValidMoves(dv, &numReturnedMoves);
         PlaceId *locations = DvWhereCanIGo(dv, &numReturnedLocs);
-        PlaceId *locations_sea = DvWhereCanIGoByType(dv, false, true,
-                             &numSeaLocs);      
-        PlaceId *locations_land = DvWhereCanIGoByType(dv, true, false,
-                             &numLandLocs);   
-        //PlaceId *trails = draculaTrails(dv);
-        
-        bool revealed = trail_revealed(dv);
-        if (current_place == CASTLE_DRACULA) revealed = true;
-        
-        
         // if no possible moves
         if (numReturnedMoves == 0){
             registerBestPlay("TP", "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+            free(dangerousPlaces);
+            free(moves);
+            free(locations);
             return;
-        } 
+        }
         
         // only hide or double back available
         if (numReturnedLocs == 0) {
+            // check whether current_place safe or not
+            dangerous = false;
+            for (int j = 0; j < possible_places; j++) {
+                if (current_place == dangerousPlaces[j]) {
+                    dangerous = true;
+                    break;
+                }
+            }
+            for (int j = 0; j < numReturnedMoves;) {
+                if (moves[j] == DOUBLE_BACK_1 && dangerous) {
+                    j++;
+                    continue;
+                } else if (moves[j] == HIDE && dangerous) {
+                    j++;
+                    continue;    
+                }
+                registerBestPlay(placeIdToAbbrev(moves[j]), 
+                    "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                free(dangerousPlaces);
+                free(moves);
+                free(locations);
+                return;
+            }
             srandom(time(NULL));
-            registerBestPlay(placeIdToAbbrev(moves[random() % numReturnedMoves]), 
+            registerBestPlay(placeIdToAbbrev(moves[random() % 
+                numReturnedMoves]), 
                 "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+            free(dangerousPlaces);
+            free(moves);
+            free(locations);
             return;           
-        }       
+        } 
+            
         // remove dangerous places from possible moves
         int i = 0;
         while (i < numReturnedLocs) {
@@ -124,6 +140,7 @@ void decideDraculaMove(DraculaView dv)
                 i++;
             }
         }       
+        // remove dangerous places from possible moves
         i = 0;
         while (i < numReturnedMoves) {
             dangerous = false;
@@ -141,26 +158,58 @@ void decideDraculaMove(DraculaView dv)
             }
         }
         
-        if (numReturnedLocs == 0) {
-            if (numReturnedMoves != 0 && !revealed) {
-                // only hide or double back available      
-                // if the hunters don't find the trail
-                srandom(time(NULL));
-                registerBestPlay(placeIdToAbbrev(moves[random() % numReturnedMoves]), 
-                    "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-                return;
+        // check if only sea available
+        bool only_sea = true;
+        for (int i = 0; i < numReturnedLocs; i++) {
+            if (placeIdToType(locations[i]) == LAND)
+                only_sea = false;
+        }
+        
+        
+        // if no safe places available
+        if (numReturnedLocs == 0 || 
+            (DvGetHealth(dv, PLAYER_DRACULA) <= 2 && only_sea)) {
+            // if hide or double back available  
+            if (numReturnedMoves != 0 ) {
+                // check whether current_place safe or not
+                dangerous = false;
+                for (int j = 0; j < possible_places; j++) {
+                    if (current_place == dangerousPlaces[j]) {
+                        dangerous = true;
+                        break;
+                    }
+                }
+                for (int j = 0; j < numReturnedMoves;) {
+                    if (moves[j] == DOUBLE_BACK_1 && dangerous) {
+                        j++;
+                        continue;
+                    } else if (moves[j] == HIDE && dangerous) {
+                        j++;
+                        continue;    
+                    }
+                    registerBestPlay(placeIdToAbbrev(moves[j]), 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
             }
          
             int numGo;  
             PlaceId *locations2 = DvWhereCanIGo(dv, &numGo);
             int numGreach;
-            PlaceId *G_reach = DvWhereCanTheyGo(dv, PLAYER_LORD_GODALMING, &numGreach);
+            PlaceId *G_reach = DvWhereCanTheyGo(dv, PLAYER_LORD_GODALMING, 
+                &numGreach);
             int numSreach;
-            PlaceId *S_reach = DvWhereCanTheyGo(dv, PLAYER_DR_SEWARD, &numSreach);
+            PlaceId *S_reach = DvWhereCanTheyGo(dv, PLAYER_DR_SEWARD, 
+                &numSreach);
             int numHreach;
-            PlaceId *H_reach = DvWhereCanTheyGo(dv, PLAYER_VAN_HELSING, &numHreach);
+            PlaceId *H_reach = DvWhereCanTheyGo(dv, PLAYER_VAN_HELSING, 
+                &numHreach);
             int numMreach;
-            PlaceId *M_reach = DvWhereCanTheyGo(dv, PLAYER_MINA_HARKER, &numMreach);
+            PlaceId *M_reach = DvWhereCanTheyGo(dv, PLAYER_MINA_HARKER, 
+                &numMreach);
             
             //intersections array to store the number of intersections of paths
             int intersections[numGo];
@@ -186,7 +235,8 @@ void decideDraculaMove(DraculaView dv)
             }
             
             for (int i = 0; i < numGo; i++) {
-                if (locations2[i] == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING)) {
+                if (locations2[i] == DvGetPlayerLocation(dv, 
+                    PLAYER_LORD_GODALMING)) {
                     intersections[i] += 1;
                     int HP = DvGetHealth(dv, PLAYER_LORD_GODALMING);
                     // if there are more than 1 lowest-intersections, 
@@ -195,7 +245,8 @@ void decideDraculaMove(DraculaView dv)
                         lowestHP[i] = HP; 
                     }
                 }
-                if (locations2[i] == DvGetPlayerLocation(dv, PLAYER_DR_SEWARD)) {
+                if (locations2[i] == DvGetPlayerLocation(dv, 
+                    PLAYER_DR_SEWARD)) {
                     intersections[i] += 1;
                     int HP = DvGetHealth(dv, PLAYER_DR_SEWARD);
                     // if there are more than 1 lowest-intersections, 
@@ -204,7 +255,8 @@ void decideDraculaMove(DraculaView dv)
                         lowestHP[i] = HP; 
                     }
                 }
-                if (locations2[i] == DvGetPlayerLocation(dv, PLAYER_VAN_HELSING)) {
+                if (locations2[i] == DvGetPlayerLocation(dv, 
+                    PLAYER_VAN_HELSING)) {
                     intersections[i] += 1;
                     int HP = DvGetHealth(dv, PLAYER_VAN_HELSING);
                     // if there are more than 1 lowest-intersections, 
@@ -213,7 +265,8 @@ void decideDraculaMove(DraculaView dv)
                         lowestHP[i] = HP; 
                     }
                 }
-                if (locations2[i] == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER)) {
+                if (locations2[i] == DvGetPlayerLocation(dv, 
+                    PLAYER_MINA_HARKER)) {
                     intersections[i] += 1;
                     int HP = DvGetHealth(dv, PLAYER_MINA_HARKER);
                     // if there are more than 1 lowest-intersections, 
@@ -293,70 +346,179 @@ void decideDraculaMove(DraculaView dv)
             }
             registerBestPlay(placeIdToAbbrev(locations2[ToGo]), 
                 "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+            free(dangerousPlaces);
+            free(moves);
+            free(locations);
+            free(locations2);
+            free(G_reach);
+            free(S_reach);
+            free(H_reach);
+            free(M_reach);  
             return;
         }
+        
+        if (current_round % 13 == 0){
+            for (int i = 0; i < numReturnedLocs; i++) {
+                for (int j = 0; j < 29; j++) {
+                    if(locations[i] == port_city[j]) {
+                        registerBestPlay(placeIdToAbbrev(locations[i]), 
+                            "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                        free(dangerousPlaces);
+                        free(moves);
+                        free(locations);
+                        return;
+                    }
+                }
+            }
+            for (int i = 0; i < numReturnedLocs; i++) {
+                if (placeIdToType(locations[i]) != SEA) {
+                    registerBestPlay(placeIdToAbbrev(locations[i]),
+                        "MUDA MUDA MUDA MUDA MUDA!!!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }  
+            }     
+        }
+        
+ 
         // if in castle, try to move to port city or hide to gain hp
-        if (current_place == CASTLE_DRACULA) {
-            
+        if (current_place == CASTLE_DRACULA) {           
             bool galgatz = false;
             for (int i = 0; i < numReturnedMoves; i++) {
-                if (moves[i] == HIDE && safe_castle) {
-                    registerBestPlay("HI", 
-                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-                    return;
-                }
                 if (moves[i] == GALATZ) {
                     galgatz = true;
                 }
-            }  
-            // generate a random place from possible moves
+            }
+            free(dangerousPlaces);
+            free(moves);
+            free(locations);  
+            // if GALATZ is available go to GALATZ
             if (galgatz) {
                 registerBestPlay("GA", 
                     "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
                 return;
-            }
-            srandom(time(NULL));
-            registerBestPlay(placeIdToAbbrev(locations[random() % numReturnedLocs]), 
-                "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-            return;
-        }
-        // try to move to port city
-        if (current_place == GALATZ) {
-            for (int i = 0; i < numReturnedMoves; i++) {
-                if (moves[i] == CONSTANTA) {
-                    registerBestPlay("CN", 
-                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-                    return;
-                }
-            }
-            srandom(time(NULL));
-            registerBestPlay(placeIdToAbbrev(locations[random() % numReturnedLocs]), 
-                "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-            return; 
-            
-        }
-      
-        // if the trail is revealed, try to move to the sea
-        if (revealed && numSeaLocs != 0) {
-            srandom(time(NULL));
-            registerBestPlay(placeIdToAbbrev(locations_sea[random() % numSeaLocs]), 
-                "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
-            return;
-        }
-
-        // if the trail is not revealed, try to move on the land
-        if (!revealed && numLandLocs != 0) {
-            srandom(time(NULL));
-            registerBestPlay(placeIdToAbbrev(locations_land[random() % numLandLocs]), 
+            }         
+            registerBestPlay("KL", 
                 "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
             return;
         }
         
-        // generate a random place from possible locations
-        srandom(time(NULL));
-        registerBestPlay(placeIdToAbbrev(locations[random() % numReturnedLocs]), 
+        
+       
+        // try to move to castle 
+        for (int i = 0; i < numReturnedLocs; i++) {
+            if (locations[i] == CASTLE_DRACULA) {
+                registerBestPlay("CD", 
+                    "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                free(dangerousPlaces);
+                free(moves);
+                free(locations);
+                return;
+            }
+        } 
+        
+        // try to move to port city
+        for (int i = 0; i < numReturnedLocs; i++) {
+            for (int j = 0; j < 29; j++) {
+                if(locations[i] == port_city[j]) {
+                    registerBestPlay(placeIdToAbbrev(locations[i]), 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+            }
+        }
+        
+        // try to move close to port city
+        if (current_place == KLAUSENBURG) {
+            for (int i = 0; i < numReturnedLocs; i++) {
+                if (locations[i] == BUCHAREST) {
+                    registerBestPlay("BC", 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+                if (locations[i] == GALATZ) {
+                    registerBestPlay("GA", 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+            }
+            
+        }  
+        // try to move close to castle
+        if (current_place == SZEGED) {
+            for (int i = 0; i < numReturnedLocs; i++) {
+                if (locations[i] == KLAUSENBURG) {
+                    registerBestPlay("KL", 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+            }
+            
+        } 
+        // try to move close to castle
+        if (current_place == BELGRADE) {
+            for (int i = 0; i < numReturnedLocs; i++) {
+                if (locations[i] == KLAUSENBURG) {
+                    registerBestPlay("KL", 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+            }
+            
+        }
+        // try to move close to castle
+        if (current_place == BUDAPEST) {
+            for (int i = 0; i < numReturnedLocs; i++) {
+                if (locations[i] == KLAUSENBURG) {
+                    registerBestPlay("KL", 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+            }
+            
+        } 
+        // go to a land location where there are more roads to escape
+        for (int i = 0; i < numReturnedLocs; i++) {     
+            if(placeIdToType(locations[i]) == LAND) {
+                if (locations[i] != BERLIN && locations[i] != PRAGUE && 
+                    locations[i] != VIENNA && locations[i] != BUDAPEST) {
+                    registerBestPlay(placeIdToAbbrev(locations[i]), 
+                        "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
+                    free(dangerousPlaces);
+                    free(moves);
+                    free(locations);
+                    return;
+                }
+                
+            }
+            
+        }
+        // if above options are not available, chose the first location to go to
+        registerBestPlay(placeIdToAbbrev(locations[0]), 
             "MUDA MUDA MUDA MUDA MUDA!\nWRYYYYYYYY!");
         free(moves);
+        free(dangerousPlaces);
+        free(locations);
         return;
     }
 }
@@ -472,61 +634,63 @@ static PlaceId *hunterPossiblePlaces(DraculaView dv, int *possible_places) {
             *possible_places += 1;
         }
     }
+    
+    // If a hunter has 0 health, set hospital nearby as dangerous.
+    int G_health = DvGetHealth(dv, PLAYER_LORD_GODALMING);
+    int S_health = DvGetHealth(dv, PLAYER_DR_SEWARD);
+    int H_health = DvGetHealth(dv, PLAYER_VAN_HELSING);
+    int M_health = DvGetHealth(dv, PLAYER_MINA_HARKER);
+    
+    if (G_health == 0 || S_health == 0 || H_health == 0 || M_health == 0) {
+        int y=0;
+        for (y=0; places[y] != NOWHERE && y < NUM_REAL_PLACES; y++) {
+            if (places[y] == SARAJEVO) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            places[y] = SARAJEVO;
+            *possible_places += 1;
+        }
+        
+        for (int y=0; places[y] != NOWHERE && y < NUM_REAL_PLACES; y++) {
+            if (places[y] == SZEGED) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            places[y] = SZEGED;
+            *possible_places += 1;
+        }
+        
+        for (y=0; places[y] != NOWHERE && y < NUM_REAL_PLACES; y++) {
+            if (places[y] == ZAGREB) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            places[y] = ZAGREB;
+            *possible_places += 1;
+        }
+        
+        for (y=0; places[y] != NOWHERE && y < NUM_REAL_PLACES; y++) {
+            if (places[y] == BELGRADE) {
+                exist = true;
+                break;
+            }
+        }
+        if (!exist) {
+            places[y] = BELGRADE;
+            *possible_places += 1;
+        }
+    }
+        
     return places;
 }
 
 
-/*// trails of dracula*/
-/*static PlaceId *draculaTrails(DraculaView dv) {*/
-
-/*    */
-/*    // add vampire location*/
-/*    if (DvGetVampireLocation(dv) != NOWHERE) {*/
-/*        trails[0] = DvGetVampireLocation(dv);*/
-/*    }*/
-/*    int numTraps;*/
-/*    PlaceId *traps = DvGetTrapLocations(dv, &numTraps);  */
-/*    // add or trap locations to trail*/
-/*    for (int i = 0; i < numTraps; i++) {*/
-/*        bool exist = false;*/
-/*        int j = 0;*/
-/*        */
-/*        for (j = 0; trails[j] != NOWHERE && j < 6; j++) {*/
-/*            if (traps[i] == trails[j]) {*/
-/*                exist = true;*/
-/*                break;*/
-/*            }*/
-/*        }*/
-/*        if (!exist) {*/
-/*            trails[j] = traps[i];*/
-/*        }*/
-/*    }*/
-/*    free(traps);*/
-/*    return trails;*/
-/*}*/
-
-
-// check if trail is revealed
-static bool trail_revealed(DraculaView dv) {
-    int numTrails = 0;
-    if (DvGetVampireLocation(dv) != NOWHERE) 
-        numTrails++;
-    int numTraps;
-    PlaceId *traps = DvGetTrapLocations(dv, &numTraps);  
-    free(traps);
-    Round current_round = DvGetRound(dv);
-    numTrails += numTraps;
-    if (current_round < 6) {
-        if (numTrails < current_round) 
-            return true;
-        else
-            return false;
-    } else {
-        if (numTrails < 6) 
-            return true;
-        else
-            return false;
-    }   
-}
 
 

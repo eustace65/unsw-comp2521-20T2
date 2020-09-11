@@ -34,6 +34,7 @@ void dropQueue(Queue q);
 void enterQueue(Queue q, Item it);
 Item leaveQueue(Queue q);
 void search(HunterView hv, int radius, PlaceId currPlace, PlaceId *poss, int currPlayer);
+void filter(HunterView hv, PlaceId *poss);
 
 
 
@@ -52,13 +53,6 @@ void decideHunterMove(HunterView hv)
     for (int i = 0; i < maximunPlace; i++) {
         poss[i] = NOWHERE;
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     int currPlayer = HvGetPlayer(hv);
@@ -102,33 +96,30 @@ void decideHunterMove(HunterView hv)
     int pathLength;
     
     
+    int currHpLG = HvGetHealth(hv, PLAYER_LORD_GODALMING);
+    int currHpDS = HvGetHealth(hv, PLAYER_DR_SEWARD);
+    int currHpVH = HvGetHealth(hv, PLAYER_VAN_HELSING);
+    int currHpMH = HvGetHealth(hv, PLAYER_MINA_HARKER);
+    if ((round - draLastRound > 3) && (lastHpLG - currHpLG) > 0) {
+        LastKnown = HvGetPlayerLocation(hv, PLAYER_LORD_GODALMING);
+        lastHpLG = currHpLG;
+    }
     
+    if ((round - draLastRound > 3) && lastHpDs - currHpDS > 0) {
+        LastKnown = HvGetPlayerLocation(hv, PLAYER_DR_SEWARD);
+        lastHpDs = currHpDS;
+    }
+    
+    if ((round - draLastRound > 3) && lastHpVH - currHpVH > 0) {
+        LastKnown = HvGetPlayerLocation(hv, PLAYER_VAN_HELSING);
+        lastHpVH = currHpVH;
+    }
+    
+    if ((round - draLastRound > 3) && lastHpHM - currHpMH > 0) {
+        LastKnown = HvGetPlayerLocation(hv, PLAYER_MINA_HARKER);
+        lastHpHM = currHpMH;
+    }
     int currHp = HvGetHealth(hv, currPlayer);
-    if ((round - draLastRound > 3) && currPlayer == PLAYER_LORD_GODALMING && lastHpLG - currHp > 0) {
-        LastKnown = currPlace;
-        lastHpLG = currHp;
-    }
-    
-    if ((round - draLastRound > 3) && currPlayer == PLAYER_DR_SEWARD && lastHpDs - currHp > 0) {
-        LastKnown = currPlace;
-        lastHpDs = currHp;
-    }
-    
-    if ((round - draLastRound > 3) && currPlayer == PLAYER_VAN_HELSING && lastHpVH - currHp > 0) {
-        LastKnown = currPlace;
-        lastHpVH = currHp;
-    }
-    
-    if ((round - draLastRound > 3) && currPlayer == PLAYER_MINA_HARKER && lastHpHM - currHp > 0) {
-        LastKnown = currPlace;
-        lastHpHM = currHp;
-    }
-    
-    
-    
-    
-    
-    
     
    
     // Rest to gain life points
@@ -138,6 +129,11 @@ void decideHunterMove(HunterView hv)
     
     // If Dracula is only one move away and it is revealed, go to that place
     PlaceId draculaLoc = HvGetPlayerLocation(hv, PLAYER_DRACULA);
+    if (draculaLoc == SEA_UNKNOWN) {
+        return registerBestPlay(currPlaceStr, "Rest.");
+    }
+    
+    
     if (draculaLoc != CITY_UNKNOWN && draculaLoc != SEA_UNKNOWN && draculaLoc != NOWHERE) {
         HvGetShortestPathTo(hv, currPlayer, draculaLoc, &pathLength);
         if (pathLength <= 1) {
@@ -159,27 +155,30 @@ void decideHunterMove(HunterView hv)
             return registerBestPlay(currPlaceStr, "Rest.");
         }
         
-        if (pathLength > 2) {
-            return registerBestPlay(placeIdToAbbrev(shortestToCD[0]), "Back to CD.");
-        } else {
-            // Random Place
-            int i;
-            srandom(time(NULL));
-            int value = random() % numReturnedLocs;
-            for (i = 0; i < numReturnedLocs; i++) {
-                if (!otherHuntersNearby(hv, reachable[value], currPlayer)) {
-                    if (reachable[value] != currPlace ) break;
-                }
-                value++;
-                value = value % numReturnedLocs;
-            }
-
-            if (i == numReturnedLocs) {
-                return registerBestPlay(placeIdToAbbrev(reachable[randomIndex]), "Next random place.");
-            } else {
-                return registerBestPlay(placeIdToAbbrev(reachable[value]), "To somewhere don't have a hunter.");
-            }
+        // If tp to hospital
+        if (currPlace != placeAbbrevToId("KL") && currPlace != placeAbbrevToId("CD") && currPlace != placeAbbrevToId("GA")) {
+            return registerBestPlay(placeIdToAbbrev(shortestToCD[0]), "Mwahahahahaha");
         }
+        
+        
+        // If hp less than 9
+        if (currHp < 9) {
+            return registerBestPlay(currPlaceStr, "LG is resting because he's dying 9>_<9.");
+        }
+        
+        
+        if (currPlace == placeAbbrevToId("KL")) {
+            return registerBestPlay("CD", "I'm watching u~");
+        }
+        
+        if (currPlace == placeAbbrevToId("CD")) {
+            return registerBestPlay("GA", "I'm watching u~");
+        }
+        
+        if (currPlace == placeAbbrevToId("GA")) {
+            return registerBestPlay("KL", "I'm watching u~");
+        }
+        
     }
 
 
@@ -227,22 +226,51 @@ void decideHunterMove(HunterView hv)
         
     } else {
         int pathLength;
+        //printf("round: %d, draLastRound: %d\n", round, draLastRound);
         if (round - draLastRound <= 10) {
-            if (round - draLastRound <= 2 && round - draLastRound > 0) {
-                search(hv, (round - draLastRound), draculaLoc, poss, currPlayer); 
-                srandom(time(NULL));
+            if (round - draLastRound <= 3 && round - draLastRound > 0) {
+                search(hv, (round - draLastRound), LastKnown, poss, currPlayer);
+                int index = 0;
+                while(poss[index] != NOWHERE) {
+                    index++;
+                }
+                index--;
+                //printf("DracLoc: %s\n", placeIdToName(draculaLoc));
+                for (int i = 0; poss[i] != NOWHERE; i++) {
+                    if (draculaLoc != SEA_UNKNOWN && placeIsSea(poss[i])) {
+                        //printf("Loc: %s\n", placeIdToName(poss[i]));
+                        while (index >= i) {
+                            if (placeIsSea(poss[index])) {
+                                poss[index] = NOWHERE;
+                                index--;
+                                continue;
+                            }
+                            if (!placeIsSea(poss[index])) {
+                                break;
+                            }
+                            index--;
+                        }
+                        if (index < 0) break;
+                        poss[i] = poss[index];
+                        poss[index] = NOWHERE;
+                        index--;
+                    } 
+                }
+                filter(hv, poss);
                 int num = 0;
                 while (poss[num] != NOWHERE) {
+                    //printf("PossLoc: %s\n", placeIdToName(poss[num]));
                     num++;
-                }    
-                int value = random() % num;
-                
-                LastKnown = poss[value];  
+                }
+                if (num > 0) {
+                    srandom(time(NULL)); 
+                    int value = random() % num;
+                    LastKnown = poss[value];
+                }
             }      
             // Shortest Path
             PlaceId *shortestToDracula = HvGetShortestPathTo(hv, currPlayer, LastKnown,
                              &pathLength);
-            
             if (pathLength == 0) {
                
                 // Random Place
@@ -460,6 +488,94 @@ Item leaveQueue (Queue q)
 }
 
 
-      
+void filter(HunterView hv, PlaceId *poss) {
+    
+    int numReturnedLocs;
+    PlaceId *possLG = HvWhereCanTheyGo(hv, PLAYER_LORD_GODALMING, &numReturnedLocs);
+    int i = 0;
+    while (poss[i] != NOWHERE) {
+        
+        i++;
+    }
+    i--;
+    int locIndex = i;
+    i = 0;
+    while (poss[i] != NOWHERE) {
+        int j = 0;
+        while (j < numReturnedLocs) {
+            if (poss[i] == possLG[j]) {
+                poss[i] = poss[locIndex];
+                poss[locIndex] = NOWHERE;
+                locIndex--;
+            }
+            j++;
+        }
+        i++;
+    }
+    
+    PlaceId *possDS = HvWhereCanTheyGo(hv, PLAYER_DR_SEWARD, &numReturnedLocs);
+    for (int i = 0; i < numReturnedLocs; i++) {
+        //printf("DS: %s\n", placeIdToName(possDS[i]));
+    }
+    int k = 0;
+    while (k < numReturnedLocs) {
+        i = 0;
+        while (poss[i] != NOWHERE) {
+            int j = 0;
+            while (j < numReturnedLocs) {
+                if (poss[i] == possDS[j]) {
+                    poss[i] = poss[locIndex];
+                    poss[locIndex] = NOWHERE;
+                    locIndex--;
+                }
+                j++;
+            }
+            i++;
+        }
+        k++;
+    }
+    
+    
+    PlaceId *possMH = HvWhereCanTheyGo(hv, PLAYER_MINA_HARKER, &numReturnedLocs);
+    k = 0;
+    while (k < numReturnedLocs) {
+        i = 0;
+        while (poss[i] != NOWHERE) {
+            int j = 0;
+            while (j < numReturnedLocs) {
+                if (poss[i] == possMH[j]) {
+                    poss[i] = poss[locIndex];
+                    poss[locIndex] = NOWHERE;
+                    locIndex--;
+                }
+                j++;
+            }
+            i++;
+        }
+        k++;
+    }
+    
+    
+    PlaceId *possVH = HvWhereCanTheyGo(hv, PLAYER_VAN_HELSING, &numReturnedLocs);
+    k = 0;
+    while (k < numReturnedLocs) {
+        i = 0;
+        while (poss[i] != NOWHERE) {
+            int j = 0;
+            while (j < numReturnedLocs) {
+                if (poss[i] == possVH[j]) {
+                    poss[i] = poss[locIndex];
+                    poss[locIndex] = NOWHERE;
+                    locIndex--;
+                }
+                j++;
+            }
+            //printf("poss: %s\n", placeIdToName(poss[i]));
+            i++;
+        }
+        k++;
+    }
+    return;
+}   
 
 
